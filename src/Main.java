@@ -12,17 +12,17 @@ public class Main {
 		Grafo g2 = new Grafo("grafo.dat");
 		
 		System.out.println("G1");
-		for (int i = 0; i < g1.mAdjacencia.length; i++) {
-			for	(int j = 0; j < g1.mAdjacencia.length; j++){
-				System.out.print(g1.mAdjacencia[i][j] + " ");
+		for (int i = 0; i < g1.getmAdjacencia().length; i++) {
+			for	(int j = 0; j < g1.getmAdjacencia().length; j++){
+				System.out.print(g1.getmAdjacencia()[i][j] + " ");
 			}
 			System.out.println();
 		}
 		
 		System.out.println("G2");
-		for (int i = 0; i < g2.mAdjacencia.length; i++) {
-			for	(int j = 0; j < g2.mAdjacencia.length; j++){
-				System.out.print(g2.mAdjacencia[i][j] + " ");
+		for (int i = 0; i < g2.getmAdjacencia().length; i++) {
+			for	(int j = 0; j < g2.getmAdjacencia().length; j++){
+				System.out.print(g2.getmAdjacencia()[i][j] + " ");
 			}
 			System.out.println();
 		}

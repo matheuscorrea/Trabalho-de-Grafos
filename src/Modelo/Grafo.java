@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Grafo {
 	
-	public boolean mAdjacencia[][];
+	private boolean mAdjacencia[][];
 	
 	public Grafo(int n, double p){
 		mAdjacencia = new boolean [n][n];
@@ -53,7 +53,15 @@ public class Grafo {
 					mAdjacencia[i][j] = false;
 				}
 			}
-		}
-		
+		}		
 	}
+
+	public boolean[][] getmAdjacencia() {
+		return mAdjacencia;
+	}
+
+	public void setmAdjacencia(boolean[][] mAdjacencia) {
+		this.mAdjacencia = mAdjacencia;
+	}
+	
 }
