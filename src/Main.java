@@ -1,13 +1,14 @@
 import java.io.IOException;
 
-import Modelo.Grafo;
+import modelo.Busca;
+import modelo.Grafo;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stubSystem.out.println("G1");
 		
-		Grafo g1 = new Grafo(4, 0.5);
+		Grafo g1 = new Grafo(3, 0.9);
 		g1.salvar("grafo.dat");
 		Grafo g2 = new Grafo("grafo.dat");
 		
@@ -26,6 +27,10 @@ public class Main {
 			}
 			System.out.println();
 		}
+		
+		Busca b = new Busca(g2);
+		b.imprimeTiposArestas();
+		
 	}
 
 }
