@@ -24,6 +24,7 @@ public class Busca {
 		t = 0;
 		v0 = (int)(Math.random()*n);
 		this.buscaEmProfundidade(v0);
+		System.out.println(t);
 	}
 	
 	public static boolean eConexo (Grafo g){

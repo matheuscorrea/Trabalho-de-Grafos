@@ -31,6 +31,7 @@ public class Main {
 		Busca b = new Busca(g2);
 		b.imprimeTiposArestas();
 		
+		
 	}
 
 }
