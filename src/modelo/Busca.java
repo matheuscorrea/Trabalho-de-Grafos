@@ -21,6 +21,7 @@ public class Busca {
 		profundidadeEntrada = new int[n];
 		profundidadeSaida = new int[n];
 		tiposArestas = new TipoAresta[n][n];
+		inicializaTipoArestas();
 		t = 0;
 		v0 = (int)(Math.random()*n);
 		this.buscaEmProfundidade(v0);
@@ -50,7 +51,15 @@ public class Busca {
 				if(profundidadeEntrada[i] == 0){
 					tiposArestas[v][i] = TipoAresta.PROFUNDIDADE;
 					buscaEmProfundidade(i);
-				}else if(profundidadeSaida[i] != 0){
+				} else{
+					tiposArestas[v][i] = TipoAresta.RETORNO;
+					//Tem ciclo e n„o È ·rvore
+					g.setTemCiclo(true);
+					
+				}
+				
+				
+				/*else if(profundidadeSaida[i] != 0){
 					tiposArestas[v][i] = TipoAresta.CRUZAMENTO;
 				}else if(profundidadeEntrada[v] > profundidadeEntrada[i]){
 					//Ent√£o tem ciclo
@@ -63,8 +72,18 @@ public class Busca {
 			else{
 				//TODO Inicializar como TipoAresta.NULO para o caso de nenhuma aresta
 				tiposArestas[v][i] = TipoAresta.NULO;
+			}*/
+			}
+			profundidadeSaida[v] = t++;
+		}
+	}
+	
+	private void inicializaTipoArestas(){
+		for (int i = 0; i < tiposArestas.length; i++) {
+			for (int j = 0; j < tiposArestas[0].length; j++) {
+				tiposArestas[i][j] = TipoAresta.NULO;
+				tiposArestas[j][i] = TipoAresta.NULO;
 			}
 		}
-		profundidadeSaida[v] = t++;
 	}
 }
