@@ -1,6 +1,9 @@
 package modelo;
 
 import java.awt.Point;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +32,7 @@ public class Busca {
 	
 	private int t;
 	
-	public Busca(Grafo g){
+	public Busca(Grafo g, String caminho) throws FileNotFoundException, UnsupportedEncodingException{
 		this.g = g;
 		this.mAdjacencia = g.getmAdjacencia();
 		this.n = g.getmAdjacencia().length;
@@ -48,8 +51,8 @@ public class Busca {
 		for (int i = 0; i < n; i++) {
 			if(profundidadeEntrada[i]==0){
 				componentes++;			
-				buscaEmProfundidade(i,-1);
-				//Imprime componente
+				buscaEmProfundidade(i);
+				g.adicionaComponenteConexa(new ArrayList<>(componenteConexo));
 				componenteConexo.clear();
 			}
 		}
@@ -81,29 +84,91 @@ public class Busca {
 					g.seteEuleriano(false);
 				}
 			}
-			boolean aux[][] = mAdjacencia;
-			
 			
 		}
-		g.imprimirDados();
-		System.out.println(t);
+		PrintWriter writer = new PrintWriter(caminho);
+		g.imprimirDados(writer);
+		imprimeTiposArestas(writer);
+		
+		
+		if(g.eEuleriano()){
+			boolean aux[][] = mAdjacencia.clone();
+			//Começa do 0
+			System.out.println("Caminho euleriano: ");
+			int verticeAtual=0;
+			int verticeAnterior = 0;
+			int verticeCandidato = 0;
+			boolean acabou = false;
+			while(!acabou){
+				int i=0;
+				g.getPontes();
+				verticeCandidato = -1;
+				//Enquanto i<n, ou (nao tem adjacencia ou é ponte)
+				while(i<mAdjacencia.length&&
+						(mAdjacencia[verticeAtual][i]==false || 
+							(g.getPontes().contains(new Point(verticeAtual,i)) || g.getPontes().contains(new Point(i,verticeAtual)) )  
+							)
+					 ){
+					if(g.getPontes().contains(new Point(verticeAtual,i)) || g.getPontes().contains(new Point(i,verticeAtual))){
+						verticeCandidato = i;
+					}					
+					i++;
+				}
+				//Verifica se acabou
+				if(verticeCandidato==-1 && i == mAdjacencia.length){
+					acabou = true;
+				}else{
+					//Verifica se vai para o vertice ponte (candidato) ou outro (i)
+					verticeAnterior = verticeAtual;
+					if(i == mAdjacencia.length ){
+						verticeAtual = verticeCandidato;
+					}else{
+						verticeAtual = i;
+					}
+					//Remove e escreve aresta
+					mAdjacencia[verticeAnterior][verticeAtual] = false;
+					mAdjacencia[verticeAtual][verticeAnterior] = false;
+					System.out.println(" ("+verticeAnterior+","+verticeAtual+") ");
+					writer.println(" ("+verticeAnterior+","+verticeAtual+") ");
+					
+					//Reinicia o grafo
+					g = new Grafo(this.mAdjacencia);
+					this.g = g;
+					this.n = g.getmAdjacencia().length;
+					profundidadeEntrada = new int[n];
+					profundidadeSaida = new int[n];
+					back = new int[n];
+					tiposArestas = new TipoAresta[n][n];
+					inicializaTipoArestas();
+					t = 0;
+					buscaEmProfundidade(verticeAtual);
+				}
+			}
+		}
+		
+		
+		writer.close();
+		
+		
+		
 	}
 	
 	public static boolean eConexo (Grafo g){
 		return false;
 	}
 	
-	public void imprimeTiposArestas(){
-		System.out.println(v0);
+	public void imprimeTiposArestas(PrintWriter writer) throws FileNotFoundException{				
 		for (int i = 0; i < tiposArestas.length; i++) {
 			for (int j = 0; j < tiposArestas[0].length; j++) {
 				System.out.print(tiposArestas[i][j].toString() + " ");
+				writer.print(tiposArestas[i][j].toString() + " ");
 			}
 			System.out.println();
+			writer.println();
 		}
 	}
 	
-	private void buscaEmProfundidade(int v, int pai){
+	private void buscaEmProfundidade(int v){
 		profundidadeEntrada[v] = ++t;
 		componenteConexo.add(v);
 		back[v] = profundidadeEntrada[v];
@@ -118,18 +183,21 @@ public class Busca {
 					cor[i] = !cor[v];
 					//Adicionar vértice ao componente conexo
 					bloco.push(new Point(v,i));					 
-					buscaEmProfundidade(i, v);
+					buscaEmProfundidade(i);
 					if(back[i]>=profundidadeEntrada[v]){
-						if(bloco.size()==1){
-							g.adicionaPonte(new Point(v,i));
-						}						
 						List<Point> bl = new ArrayList();
 						Set<Integer> vBloco = new HashSet<>();
 						while(!bloco.empty() && !bloco.peek().equals(new Point(i,v)) && !bloco.peek().equals(new Point(v,i))){
-							vBloco.add(i);
-							vBloco.add(v);
+							vBloco.add(bloco.peek().x);
+							vBloco.add(bloco.peek().y);
 							bl.add(bloco.pop());
-						}								
+						}		
+						vBloco.add(bloco.peek().x);
+						vBloco.add(bloco.peek().y);
+						bl.add(bloco.pop());
+						if(bl.size()==1){
+							g.adicionaPonte(bl.get(0));
+						}	
 						for (Integer integer : vBloco) {
 							qtdBlocos[integer]++;
 						}

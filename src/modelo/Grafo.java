@@ -2,8 +2,11 @@ package modelo;
 
 import java.awt.Point;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,10 @@ public class Grafo {
 				}
 			}			
 		}
+	}
+	
+	public Grafo(boolean mAdjacencia[][]){
+		this.mAdjacencia = mAdjacencia.clone();
 	}
 	
 	public Grafo(String arquivo) throws IOException{
@@ -71,24 +78,42 @@ public class Grafo {
 		f.close();
 	}
 	
-	public void imprimirDados(){
+	public void imprimirDados(PrintWriter writer) throws FileNotFoundException, UnsupportedEncodingException{
+		
 		System.out.println("Tem ciclos: " + temCiclo);
+		writer.println("Tem ciclos: " + temCiclo);
+		
 		System.out.println("É conexo: " + eConexo);
 		System.out.println("É árvore: "+ eArvore);
 		System.out.println("É Bipartido " + eBipartido);
+		writer.println("É conexo: " + eConexo);
+		writer.println("É árvore: "+ eArvore);
+		writer.println("É Bipartido " + eBipartido);
+		
 		for (List<Point> l : blocos) {
-			System.out.println("Bloco: " + l.toString());
+			System.out.print("Bloco: [");
+			writer.print("Bloco: [");
+			for (Point p : l) {
+				System.out.print(" ("+p.x+","+p.y+") ");
+				writer.print(" ("+p.x+","+p.y+") ");
+			}
+			writer.println("]");
+			System.out.println("]");	
 		}
 		for (Point p : pontes) {
-			System.out.println("Ponte" + p.toString());
+			System.out.println("Ponte: ["+p.x+","+p.y+"] ");
+			writer.println("Ponte: ["+p.x+","+p.y+"] ");
 		}
 		for (Integer integer : articulacoes) {
 			System.out.println("Articulação: " + integer);
+			writer.println("Articulação: " + integer);
 		}
 		for (List<Integer> l : compConexas) {
 			System.out.println("Componente conexa: " + l.toString());
+			writer.println("Componente conexa: " + l.toString());
 		}
 		System.out.println("É euleriano: " + eEuleriano);
+		writer.println("É euleriano: " + eEuleriano);
 	}
 	
 	public boolean isTemCiclo() {
@@ -159,7 +184,10 @@ public class Grafo {
 		articulacoes.add(i);
 	}
 
-
+	public void adicionaComponenteConexa(List<Integer> l){
+		compConexas.add(l);
+	}
+	
 	public boolean[][] getmAdjacencia() {
 		return mAdjacencia;
 	}
