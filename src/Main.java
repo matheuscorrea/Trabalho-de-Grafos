@@ -8,23 +8,24 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		int n;
-		if(args.length == 1){
+		float p;
+		n = 6; 
+		p= 0.6f;
+		if(args.length == 2){
 			n = Integer.valueOf(args[0]);
+			p = Float.valueOf(args[1]);
+			Grafo g1 = new Grafo(n, p);
+			Busca b = new Busca(g1,"dados.dat");
+		}else if(args.length == 1){
+			String path = args[0];
+			Grafo g1 = new Grafo(path);
+			Busca b = new Busca(g1,"dados.dat");
 		}else{
-			n = 6;
+			Grafo g1 = new Grafo(n, p);
+			g1.salvar("grafo.dat");
+			
+			Busca b = new Busca(g1,"dados.dat");
 		}
-		Grafo g1 = new Grafo(n, 0.6);
-		g1.salvar("grafo.dat");
-		
-		System.out.println("G1");
-		for (int i = 0; i < g1.getmAdjacencia().length; i++) {
-			for	(int j = 0; j < g1.getmAdjacencia().length; j++){
-				System.out.print(g1.getmAdjacencia()[i][j] + " ");
-			}
-			System.out.println();
-		}
-
-		Busca b = new Busca(g1,"dados.dat");
 		//b.imprimeTiposArestas("dados.dat");
 				
 	}
